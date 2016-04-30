@@ -21,18 +21,17 @@ namespace SkyVox {
 	static std::stack<string> stackMessage;
     static HANDLE mutexMessagesStack;
 
-	static BSFixedString SkyPop(StaticFunctionTag *base) {
+	BSFixedString SkyPop(StaticFunctionTag *base) {
 		string message = "";
 
 		WaitForSingleObject(mutexMessagesStack, INFINITE);
 		if (!stackMessage.empty()) {
 			message = stackMessage.top();
-			_MESSAGE("Send to Papyrus  -> %s", message);
+			_MESSAGE("Send to Papyrus  -> %s", message.c_str());
 			stackMessage.pop();
 		}
 		ReleaseMutex(mutexMessagesStack);
-
-		return BSFixedString(message.c_str());
+		return message.c_str();
 	}
 	
 	bool RegisterFuncs(VMClassRegistry* registry) {
@@ -72,10 +71,10 @@ namespace SkyVox {
 				{
 					buffer[dwRead] = '\0';
 					WaitForSingleObject(mutexMessagesStack, INFINITE);
-					if (dwRead > 2) {
+					if (dwRead > 0) {
 						_MESSAGE("Pipe Read > %s", buffer);
 						stackMessage.push(buffer);
-						memset(&buffer, 0, BUFFER_SIZE);
+						memset(&buffer, 0, BUFFER_SIZE -1);
 
 					}
 					ReleaseMutex(mutexMessagesStack);
