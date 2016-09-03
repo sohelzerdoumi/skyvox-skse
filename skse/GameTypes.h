@@ -257,7 +257,7 @@ class tList
 				item = NULL;
 				next = NULL;
 
-				// has precedessor, so tail != head
+				// has predecessor, so tail != head
 				if (pred)
 				{
 					pred->next = NULL;
